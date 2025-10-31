@@ -67,3 +67,18 @@ export function uploadImage({ file }) {
     return response.json();
   });
 }
+// В файле api.js
+export function addPost({ token, description, imageUrl }) {
+  return fetch("https://wedev-api.sky.pro/api/v1/prod/instapro", {
+    method: "POST",
+    headers: {
+      Authorization: token,
+    },
+    body: JSON.stringify({ description, imageUrl }),
+  }).then((response) => {
+    if (!response.ok) {
+      throw new Error("Ошибка при добавлении поста");
+    }
+    return response.json();
+  });
+}

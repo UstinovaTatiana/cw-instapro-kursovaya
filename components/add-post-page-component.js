@@ -58,7 +58,7 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
     
     // Обработчик клика по кнопке "Добавить пост"
     document.getElementById("add-button").addEventListener("click", () => {
-      console.log("Кнопка нажата");
+      
       const description = document
         .getElementById("description-input")
         .value.trim();

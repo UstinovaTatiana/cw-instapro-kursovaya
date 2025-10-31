@@ -16,6 +16,8 @@ import {
   saveUserToLocalStorage,
 } from "./helpers.js";
 
+import { addPost } from "./api.js";
+
 export let user = getUserFromLocalStorage();
 export let page = null;
 export let posts = [];
@@ -105,14 +107,13 @@ const renderApp = () => {
       goToPage,
     });
   }
-  
+
   if (page === ADD_POSTS_PAGE) {
     console.log("Загружаю изображение...");
     return renderAddPostPageComponent({
       appEl,
-      
+
       onAddPostClick: ({ description, imageUrl }) => {
-        
         addPost({ token: getToken(), description, imageUrl })
           .then(() => getPosts({ token: getToken() }))
           .then((newPosts) => {
