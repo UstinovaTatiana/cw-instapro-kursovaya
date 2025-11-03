@@ -3,7 +3,6 @@ import { posts } from "../index.js";
 
 export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
   const render = () => {
-    // @TODO: Реализовать страницу добавления поста
     const postsHtml = posts
       .map(
         (post) => `
@@ -17,7 +16,9 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
 
     const appHtml = `
     <div class="page-container">
+    
       <div class="header-container"></div>
+
       <div class="add ">
         <h1 class="add-post">Добавить пост</h1>
       </div>

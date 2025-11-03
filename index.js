@@ -1,4 +1,4 @@
-import { getPosts } from "./api.js";
+import { getPosts, addPost } from "./api.js";
 import { renderAddPostPageComponent } from "./components/add-post-page-component.js";
 import { renderAuthPageComponent } from "./components/auth-page-component.js";
 import {
@@ -16,13 +16,13 @@ import {
   saveUserToLocalStorage,
 } from "./helpers.js";
 
-import { addPost } from "./api.js";
-
 export let user = getUserFromLocalStorage();
 export let page = null;
 export let posts = [];
 
-const getToken = () => {
+
+
+export const getToken = () => {
   const token = user ? `Bearer ${user.token}` : undefined;
   return token;
 };
@@ -69,6 +69,11 @@ export const goToPage = (newPage, data) => {
     }
 
     if (newPage === USER_POSTS_PAGE) {
+      renderPostsPageComponent({
+        appEl: document.querySelector("#app"),
+        userId: data?.userId,
+      });
+
       // @@TODO: реализовать получение постов юзера из API
       console.log("Открываю страницу пользователя: ", data.userId);
       page = USER_POSTS_PAGE;
@@ -129,32 +134,6 @@ const renderApp = () => {
     });
   }
 
-  // if (page === ADD_POSTS_PAGE) {
-  //   return renderAddPostPageComponent({
-  //     appEl,
-  //     posts,
-
-  //     onAddPostClick: ({ description, imageUrl }) => {
-  //       console.log("Загружаю изображение...");
-
-  //       addPost({ imageUrl })
-  //         .then(() => {
-  //           console.log("Добавляю пост...", { description, imageUrl });
-
-  //           return;
-  //         })
-  //         .then(() => {
-  //           console.log("Пост успешно добавлен!");
-  //           goToPage(POSTS_PAGE);
-  //         })
-  //         .catch((error) => {
-  //           console.error("Ошибка при добавлении поста:", error);
-  //           alert("Ошибка при добавлении поста. Попробуйте еще раз.");
-  //         });
-  //     },
-  //   });
-  // }
-
   if (page === POSTS_PAGE) {
     return renderPostsPageComponent({
       appEl,
@@ -162,9 +141,11 @@ const renderApp = () => {
   }
 
   if (page === USER_POSTS_PAGE) {
+    const userId = data?.userId;
+    return renderUserPhotosPageComponent({ appEl, userId });
     // @TODO: реализовать страницу с фотографиями отдельного пользвателя
-    appEl.innerHTML = "Здесь будет страница фотографий пользователя";
-    return;
+
+    
   }
 };
 

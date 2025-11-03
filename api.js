@@ -1,8 +1,9 @@
 // Замени на свой, чтобы получить независимый от других набор данных.
 // "боевая" версия инстапро лежит в ключе prod
-const personalKey = "prod";
+const personalKey = "ustinova_tatiana";
 const baseHost = "https://webdev-hw-api.vercel.app";
 const postsHost = `${baseHost}/api/v1/${personalKey}/instapro`;
+
 
 export function getPosts({ token }) {
   return fetch(postsHost, {
@@ -19,6 +20,7 @@ export function getPosts({ token }) {
       return response.json();
     })
     .then((data) => {
+      
       return data.posts;
     });
 }
@@ -69,7 +71,7 @@ export function uploadImage({ file }) {
 }
 // В файле api.js
 export function addPost({ token, description, imageUrl }) {
-  return fetch("https://wedev-api.sky.pro/api/v1/prod/instapro", {
+  return fetch(postsHost, {
     method: "POST",
     headers: {
       Authorization: token,
@@ -80,5 +82,41 @@ export function addPost({ token, description, imageUrl }) {
       throw new Error("Ошибка при добавлении поста");
     }
     return response.json();
+  });
+}
+
+// Поставить лайк поста
+export function likePost({ token, postId }) {
+  return fetch(`${postsHost}/${postId}/like`, {
+    method: "POST",
+    headers: {
+      Authorization: token,
+      // "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      if (response.status !== 200) {
+        throw new Error("Не удалось поставить лайк");
+      }
+      return response.json(); // возвращает обновленный пост
+    })
+    .then((data) => {
+      return data; // передача данных дальше
+    });
+}
+
+// Убрать лайк поста
+export function dislikePost({ token, postId }) {
+  return fetch(`${postsHost}/${postId}/dislike`, {
+    method: "POST",
+    headers: {
+      Authorization: token,
+      
+    },
+  }).then((response) => {
+    if (response.status !== 200) {
+      throw new Error("Не удалось убрать лайк");
+    }
+    return response.json(); // возвращает обновленный пост
   });
 }

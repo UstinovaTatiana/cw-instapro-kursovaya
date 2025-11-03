@@ -1,11 +1,12 @@
 import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
 import { posts, goToPage } from "../index.js";
-/* import { formatDistanceToNow } from "date-fns"; 
-import { ru } from "date-fns/locale";  */
+import { initLikeListeners } from "./initListeners.js";
+// import { formatDistanceToNow } from "date-fns";
+// import { ru } from "date-fns/locale/ru.js";
 
-export function renderPostsPageComponent({ appEl }) {
-  // @TODO: реализовать рендер постов из api
+
+export function renderPostsPageComponent({ appEl, userId = null }) {
   // Проверяем, есть ли посты
   if (!posts || posts.length === 0) {
     appEl.innerHTML = `
@@ -20,13 +21,18 @@ export function renderPostsPageComponent({ appEl }) {
   }
 
   console.log("Актуальный список постов:", posts);
-
+  const filteredPosts =
+    userId !== null ? posts.filter((post) => post.user.id == userId) : posts;
   /**
    * @TODO: чтобы отформатировать дату создания поста в виде "19 минут назад"
    * можно использовать https://date-fns.org/v2.29.3/docs/formatDistanceToNow
    */
-  const postsHtml = posts
+  const postsHtml = filteredPosts
     .map((post) => {
+      // const createdAt = formatDistanceToNow(new Date(post.createdAt), {
+      //   addSuffix: true,
+      //   locale: ru,
+      // });
       return `<li class="post">
                     <div class="post-header" data-user-id="${post.user.id}">
                         <img src="${
@@ -48,16 +54,14 @@ export function renderPostsPageComponent({ appEl }) {
                         }.svg" alt="Кнопка лайка">
                       </button>
                       <p class="post-likes-text">
-                        Нравится: <strong>${post.likes}</strong>
+                        Нравится: <strong>${post.likes.length}</strong>
                       </p>
                     </div>
                     <p class="post-text">
                       <span class="user-name">${post.user.name}</span>
                       ${post.text}
                     </p>
-                    <p class="post-date">
-                      19 минут назад
-                    </p>
+                   <p class="post-date">19 минут</p>
                   </li>`;
     })
     .join("");
@@ -81,4 +85,46 @@ export function renderPostsPageComponent({ appEl }) {
       });
     });
   }
+  initLikeListeners();
+}
+
+export function renderUserPhotosPageComponent({ appEl, userId }) {
+  // Получить посты этого пользователя
+  const userPosts = posts.filter((post) => post.user.id == userId);
+
+  if (userPosts.length === 0) {
+    appEl.innerHTML = `
+      <div class="page-container">
+        <div class="header-container"></div>
+        <p>У этого пользователя нет фотографий.</p>
+      </div>`;
+    renderHeaderComponent({
+      element: document.querySelector(".header-container"),
+    });
+    return;
+  }
+
+  const photosHtml = userPosts
+    .map(
+      (post) => `
+      <div class="user-photo" style="margin:10px;">
+        <img src="${post.imageUrl}" alt="Фото пользователя" style="width:200px; height:auto;">
+      </div>`
+    )
+    .join("");
+
+  appEl.innerHTML = `
+    <div class="page-container">
+      <div class="header-container"></div>
+      <h2>Фотографии пользователя ${userId}</h2>
+      <div class="photos-grid" style="display:flex; flex-wrap:wrap;">
+        ${photosHtml}
+      </div>
+    </div>`;
+
+  renderHeaderComponent({
+    element: document.querySelector(".header-container"),
+  });
+
+  initLikeListeners();
 }
