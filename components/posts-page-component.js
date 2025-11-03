@@ -2,8 +2,9 @@ import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
 import { posts, goToPage } from "../index.js";
 import { initLikeListeners } from "./initListeners.js";
-// import { formatDistanceToNow } from "date-fns";
-// import { ru } from "date-fns/locale/ru.js";
+
+import { formatDistanceToNow } from 'https://cdn.jsdelivr.net/npm/date-fns@2.29.3/esm/index.js';
+import { ru } from 'https://cdn.jsdelivr.net/npm/date-fns@2.29.3/esm/locale/index.js';
 
 
 export function renderPostsPageComponent({ appEl, userId = null }) {
@@ -29,10 +30,10 @@ export function renderPostsPageComponent({ appEl, userId = null }) {
    */
   const postsHtml = filteredPosts
     .map((post) => {
-      // const createdAt = formatDistanceToNow(new Date(post.createdAt), {
-      //   addSuffix: true,
-      //   locale: ru,
-      // });
+      const createdAt = formatDistanceToNow(new Date(post.createdAt), {
+        addSuffix: true,
+        locale: ru,
+      });
       return `<li class="post">
                     <div class="post-header" data-user-id="${post.user.id}">
                         <img src="${
@@ -61,7 +62,7 @@ export function renderPostsPageComponent({ appEl, userId = null }) {
                       <span class="user-name">${post.user.name}</span>
                       ${post.text}
                     </p>
-                   <p class="post-date">19 минут</p>
+                   <p class="post-date">${createdAt}</p>
                   </li>`;
     })
     .join("");
