@@ -67,6 +67,14 @@ export const goToPage = (newPage, data) => {
           goToPage(POSTS_PAGE);
         });
     }
+//     let currentUserId = null;
+
+// // При клике на пользователя:
+// function handleUserClick(userId) {
+//   currentUserId = userId;
+//   console.log('Выбран пользователь:', currentUserId);
+//   goToPage(USER_POSTS_PAGE);
+// }
 
     if (newPage === USER_POSTS_PAGE) {
       renderPostsPageComponent({
@@ -89,6 +97,7 @@ export const goToPage = (newPage, data) => {
 
   throw new Error("страницы не существует");
 };
+
 
 const renderApp = () => {
   const appEl = document.getElementById("app");
@@ -140,13 +149,24 @@ const renderApp = () => {
     });
   }
 
-  if (page === USER_POSTS_PAGE) {
-    const userId = data?.userId;
-    return renderUserPhotosPageComponent({ appEl, userId });
-    // @TODO: реализовать страницу с фотографиями отдельного пользвателя
+  // if (page === USER_POSTS_PAGE) {
+    
+  //   getUserPosts(currentUserId)
+  //     .then(userPosts => {
+  //       renderUserPhotosPageComponent({
+  //         appEl,
+  //         userPosts,
+  //         userId: currentUserId,
+  //       });
+  //     });
+  // }
+  // // if (page === USER_POSTS_PAGE) {
+  // //   const userId = data?.userId;
+  // //   return renderUserPhotosPageComponent({ appEl, userId });
+  // //   // @TODO: реализовать страницу с фотографиями отдельного пользвателя
 
     
-  }
+  // // }
 };
 
 goToPage(POSTS_PAGE);
