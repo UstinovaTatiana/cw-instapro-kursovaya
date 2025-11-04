@@ -4,7 +4,6 @@ const personalKey = "ustinova_tatiana";
 const baseHost = "https://webdev-hw-api.vercel.app";
 const postsHost = `${baseHost}/api/v1/${personalKey}/instapro`;
 
-
 export function getPosts({ token }) {
   return fetch(postsHost, {
     method: "GET",
@@ -20,7 +19,6 @@ export function getPosts({ token }) {
       return response.json();
     })
     .then((data) => {
-      
       return data.posts;
     });
 }
@@ -48,7 +46,7 @@ export function loginUser({ login, password }) {
     // Можно выбросить ошибку или вернуть rejected Promise
     return Promise.reject(new Error("Логин и пароль не могут быть пустыми."));
   }
-  
+
   return fetch(baseHost + "/api/user/login", {
     method: "POST",
     body: JSON.stringify({
@@ -100,16 +98,22 @@ export function likePost({ token, postId }) {
       // "Content-Type": "application/json",
     },
   })
-    .then((response) => {
-      if (response.status !== 200) {
-        throw new Error("Не удалось поставить лайк");
-      }
-      return response.json(); // возвращает обновленный пост
-    })
-    .then((data) => {
-      return data; // передача данных дальше
-    });
+  .then((response) => {
+    if (response.status === 401 || response.status === 403) {
+      throw new Error("Пожалуйста, авторизуйтесь, чтобы ставить лайки");
+    }
+
+    if (!response.ok) {
+      // Обработка других ошибок
+      return response.json().then((data) => {
+        throw new Error(data?.message || "Не удалось поставить лайк");
+      });
+    }
+
+    return response.json(); // Успешный ответ
+  });
 }
+
 
 // Убрать лайк поста
 export function dislikePost({ token, postId }) {
@@ -117,7 +121,6 @@ export function dislikePost({ token, postId }) {
     method: "POST",
     headers: {
       Authorization: token,
-      
     },
   }).then((response) => {
     if (response.status !== 200) {

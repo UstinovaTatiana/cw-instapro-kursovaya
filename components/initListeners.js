@@ -31,7 +31,8 @@ export const initLikeListeners = () => {
         updatePostLikeUI(post);
         
       } catch (error) {
-        console.error("Ошибка при лайке:", error);
+        alert(`Ошибка: ${error.message}`);
+        console.error("Ошибка при лайке или дизлайке:", error);
       }
     });
   }
