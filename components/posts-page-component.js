@@ -3,9 +3,8 @@ import { renderHeaderComponent } from "./header-component.js";
 import { posts, goToPage } from "../index.js";
 import { initLikeListeners } from "./initListeners.js";
 
-import { formatDistanceToNow } from 'https://cdn.jsdelivr.net/npm/date-fns@2.29.3/esm/index.js';
-import { ru } from 'https://cdn.jsdelivr.net/npm/date-fns@2.29.3/esm/locale/index.js';
-
+import { formatDistanceToNow } from "https://cdn.jsdelivr.net/npm/date-fns@2.29.3/esm/index.js";
+import { ru } from "https://cdn.jsdelivr.net/npm/date-fns@2.29.3/esm/locale/index.js";
 
 export function renderPostsPageComponent({ appEl, userId = null }) {
   // Проверяем, есть ли посты
@@ -23,7 +22,7 @@ export function renderPostsPageComponent({ appEl, userId = null }) {
 
   console.log("Актуальный список постов:", posts);
   const filteredPosts =
-    userId !== null ? posts.filter((post) => post.user.id == userId) : posts;
+    userId !== null ? posts.filter((post) => post.user.id === userId) : posts;
   /**
    * @TODO: чтобы отформатировать дату создания поста в виде "19 минут назад"
    * можно использовать https://date-fns.org/v2.29.3/docs/formatDistanceToNow
@@ -58,10 +57,9 @@ export function renderPostsPageComponent({ appEl, userId = null }) {
                         Нравится: <strong>${post.likes.length}</strong>
                       </p>
                     </div>
-                    <p class="post-text">
-                      <span class="user-name">${post.user.name}</span>
-                      ${post.text}
-                    </p>
+                   <p class="post-text">
+                  <span class="user-name">${post.user.name}</span>
+                  ${post.text || ""}</p>
                    <p class="post-date">${createdAt}</p>
                   </li>`;
     })
@@ -91,7 +89,7 @@ export function renderPostsPageComponent({ appEl, userId = null }) {
 
 export function renderUserPhotosPageComponent({ appEl, userId }) {
   // Получить посты этого пользователя
-  const userPosts = posts.filter((post) => post.user.id == userId);
+  const userPosts = posts.filter((post) => post.user.id === userId);
 
   if (userPosts.length === 0) {
     appEl.innerHTML = `

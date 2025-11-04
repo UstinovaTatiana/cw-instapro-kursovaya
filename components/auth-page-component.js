@@ -97,24 +97,121 @@ export function renderAuthPageComponent({ appEl, setUser }) {
     }
 
     // Обработка клика на кнопку входа/регистрации
+    // document.getElementById("login-button").addEventListener("click", () => {
+    //   setError("");
+
+    //   if (isLoginMode) {
+    //     // Обработка входа
+    //     const login = document.getElementById("login-input").value;
+    //     const password = document.getElementById("password-input").value;
+
+    //     if (!login) {
+    //       alert("Введите логин");
+    //       return;
+    //     }
+
+    //     if (!password) {
+    //       alert("Введите пароль");
+    //       return;
+    //     }
+
+    //     loginUser({ login, password })
+    //       .then((user) => {
+    //         setUser(user.user);
+    //       })
+    //       .catch((error) => {
+    //         console.warn(error);
+    //         setError(error.message);
+    //       });
+    //   } else {
+    //     // Обработка регистрации
+    //     const login = document.getElementById("login-input").value;
+    //     const name = document.getElementById("name-input").value;
+    //     const password = document.getElementById("password-input").value;
+
+    //     if (!name) {
+    //       alert("Введите имя");
+    //       return;
+    //     }
+
+    //     if (!login) {
+    //       alert("Введите логин");
+    //       return;
+    //     }
+
+    //     if (!password) {
+    //       alert("Введите пароль");
+    //       return;
+    //     }
+
+    //     if (!imageUrl) {
+    //       alert("Не выбрана фотография");
+    //       return;
+    //     }
+
+    //     registerUser({ login, password, name, imageUrl })
+    //       .then((user) => {
+    //         setUser(user.user);
+    //       })
+    //       .catch((error) => {
+    //         console.warn(error);
+    //         setError(error.message);
+    //       });
+    //   }
+    // });
+
     document.getElementById("login-button").addEventListener("click", () => {
       setError("");
 
+      // Массив полей для обеих форм, добавьте или уберите хотя бы поля по необходимости
+      const fields = [
+        { id: "login-input", label: "логин", key: "login" },
+        { id: "password-input", label: "пароль", key: "password" },
+      ];
+
+      if (!isLoginMode) {
+        // Для регистрации добавляем дополнительные поля
+        fields.push(
+          { id: "name-input", label: "имя", key: "name" }
+          // предполагается, что imageUrl — глобальная переменная с выбранным фото
+        );
+      }
+
+      // Собираем ошибки по всем полям
+      const errors = {};
+      let allFieldsValid = true; // флаг для проверки валидности
+      const values = {};
+
+      fields.forEach((field) => {
+        const el = document.getElementById(field.id);
+        const value = el ? el.value.trim() : "";
+        values[field.key] = value;
+
+        if (!value) {
+          errors[field.key] = `Пожалуйста, введите ${field.label}.`;
+          allFieldsValid = false;
+        } else {
+          errors[field.key] = false;
+        }
+      });
+
+      // Проверка фото при регистрации
+      if (!isLoginMode && !imageUrl) {
+        errors["image"] = "Не выбрана фотография";
+        allFieldsValid = false;
+      }
+
+      // Если есть ошибки — показываем список
+      const errorMessages = Object.values(errors).filter(Boolean);
+      if (errorMessages.length > 0) {
+        alert(errorMessages.join("\n"));
+        return; // останавливаем
+      }
+
+      // Всё проверили — идём дальше
       if (isLoginMode) {
-        // Обработка входа
-        const login = document.getElementById("login-input").value;
-        const password = document.getElementById("password-input").value;
-
-        if (!login) {
-          alert("Введите логин");
-          return;
-        }
-
-        if (!password) {
-          alert("Введите пароль");
-          return;
-        }
-
+        // Вход
+        const { login, password } = values;
         loginUser({ login, password })
           .then((user) => {
             setUser(user.user);
@@ -124,31 +221,8 @@ export function renderAuthPageComponent({ appEl, setUser }) {
             setError(error.message);
           });
       } else {
-        // Обработка регистрации
-        const login = document.getElementById("login-input").value;
-        const name = document.getElementById("name-input").value;
-        const password = document.getElementById("password-input").value;
-
-        if (!name) {
-          alert("Введите имя");
-          return;
-        }
-
-        if (!login) {
-          alert("Введите логин");
-          return;
-        }
-
-        if (!password) {
-          alert("Введите пароль");
-          return;
-        }
-
-        if (!imageUrl) {
-          alert("Не выбрана фотография");
-          return;
-        }
-
+        // Регистрация
+        const { login, password, name } = values;
         registerUser({ login, password, name, imageUrl })
           .then((user) => {
             setUser(user.user);

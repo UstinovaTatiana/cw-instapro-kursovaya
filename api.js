@@ -43,6 +43,12 @@ export function registerUser({ login, password, name, imageUrl }) {
 }
 
 export function loginUser({ login, password }) {
+  // Проверка на пробелы и пустоту
+  if (!login.trim() || !password.trim()) {
+    // Можно выбросить ошибку или вернуть rejected Promise
+    return Promise.reject(new Error("Логин и пароль не могут быть пустыми."));
+  }
+  
   return fetch(baseHost + "/api/user/login", {
     method: "POST",
     body: JSON.stringify({

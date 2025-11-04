@@ -18,9 +18,7 @@ import {
 
 export let user = getUserFromLocalStorage();
 export let page = null;
-export let posts = [];
-
-
+export const posts = [];
 
 export const getToken = () => {
   const token = user ? `Bearer ${user.token}` : undefined;
@@ -59,7 +57,8 @@ export const goToPage = (newPage, data) => {
       return getPosts({ token: getToken() })
         .then((newPosts) => {
           page = POSTS_PAGE;
-          posts = newPosts;
+          posts.length = 0; // очищаем текущий массив
+          posts.push(...newPosts); // добавляем новые элементы
           renderApp();
         })
         .catch((error) => {
@@ -67,14 +66,16 @@ export const goToPage = (newPage, data) => {
           goToPage(POSTS_PAGE);
         });
     }
-//     let currentUserId = null;
+    //     let currentUserId = null;
 
-// // При клике на пользователя:
-// function handleUserClick(userId) {
-//   currentUserId = userId;
-//   console.log('Выбран пользователь:', currentUserId);
-//   goToPage(USER_POSTS_PAGE);
-// }
+    // // При клике на пользователя:
+    // function handleUserClick(userId) {
+    //   currentUserId = userId;
+    //   console.log('Выбран пользователь:', currentUserId);
+    //   goToPage(USER_POSTS_PAGE);
+    // }
+
+    
 
     if (newPage === USER_POSTS_PAGE) {
       renderPostsPageComponent({
@@ -85,7 +86,7 @@ export const goToPage = (newPage, data) => {
       // @@TODO: реализовать получение постов юзера из API
       console.log("Открываю страницу пользователя: ", data.userId);
       page = USER_POSTS_PAGE;
-      posts = [];
+      posts.length = 0;
       return renderApp();
     }
 
@@ -97,7 +98,6 @@ export const goToPage = (newPage, data) => {
 
   throw new Error("страницы не существует");
 };
-
 
 const renderApp = () => {
   const appEl = document.getElementById("app");
@@ -131,7 +131,8 @@ const renderApp = () => {
         addPost({ token: getToken(), description, imageUrl })
           .then(() => getPosts({ token: getToken() }))
           .then((newPosts) => {
-            posts = newPosts;
+            posts.length = 0; // очищаем текущий массив
+            posts.push(...newPosts); // добавляем новые элементы
             goToPage(POSTS_PAGE);
             showNotification("Пост успешно добавлен!");
           })
@@ -150,7 +151,7 @@ const renderApp = () => {
   }
 
   // if (page === USER_POSTS_PAGE) {
-    
+
   //   getUserPosts(currentUserId)
   //     .then(userPosts => {
   //       renderUserPhotosPageComponent({
@@ -165,7 +166,6 @@ const renderApp = () => {
   // //   return renderUserPhotosPageComponent({ appEl, userId });
   // //   // @TODO: реализовать страницу с фотографиями отдельного пользвателя
 
-    
   // // }
 };
 
